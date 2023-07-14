@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { Tweet } from './tweet.entity';
+import { CreateTweetDto, UpdateTweetDto } from './dto';
 
 @Injectable()
 export class TweetsService {
@@ -23,16 +24,16 @@ export class TweetsService {
     return tweet;
   }
 
-  createTweet(message: string): void {
+  createTweet({ message }: CreateTweetDto): void {
     this.tweets.push({
       id: (Math.floor(Math.random() * 2000) + 1).toString(),
       message,
     });
   }
 
-  updateTweet(id: string, message: string) {
-    const tweet: Tweet = this.getTweet(id);
-    tweet.message = message;
+  updateTweet(id: string, message: UpdateTweetDto) {
+    let tweet: Tweet = this.getTweet(id);
+    tweet = { ...tweet, message: message.toString() };
     return tweet;
   }
 

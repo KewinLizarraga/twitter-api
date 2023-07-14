@@ -11,6 +11,7 @@ import {
 
 import { TweetsService } from './tweets.service';
 import { Tweet } from './tweet.entity';
+import { CreateTweetDto, UpdateTweetDto } from './dto';
 
 @Controller('tweets')
 export class TweetsController {
@@ -29,14 +30,14 @@ export class TweetsController {
   }
 
   @Post()
-  createTweet(@Body('message') message: string) {
+  createTweet(@Body() message: CreateTweetDto) {
     return this.tweetsService.createTweet(message);
   }
 
   @Patch(':id')
   updateTweet(
     @Param('id') id: string,
-    @Body('message') message: string,
+    @Body('message') message: UpdateTweetDto,
   ): Tweet {
     return this.tweetsService.updateTweet(id, message);
   }
