@@ -18,15 +18,14 @@ export class TweetsController {
   constructor(private readonly tweetsService: TweetsService) {}
 
   @Get()
-  getTweets(@Query() filter): Tweet[] {
+  async getTweets(@Query() filter): Promise<Tweet[]> {
     const { orderBy, searchTerm } = filter;
-
-    return this.tweetsService.getTweets();
+    return await this.tweetsService.getTweets();
   }
 
   @Get(':id')
-  getTweet(@Param('id') id: string): Tweet {
-    return this.tweetsService.getTweet(id);
+  async getTweet(@Param('id') id: number): Promise<Tweet> {
+    return await this.tweetsService.getTweet(id);
   }
 
   @Post()
@@ -35,15 +34,15 @@ export class TweetsController {
   }
 
   @Patch(':id')
-  updateTweet(
-    @Param('id') id: string,
-    @Body('message') message: UpdateTweetDto,
-  ): Tweet {
-    return this.tweetsService.updateTweet(id, message);
+  async updateTweet(
+    @Param('id') id: number,
+    @Body() message: UpdateTweetDto,
+  ): Promise<Tweet> {
+    return await this.tweetsService.updateTweet(id, message);
   }
 
   @Delete(':id')
-  deleteTweet(@Param('id') id: string) {
+  deleteTweet(@Param('id') id: number) {
     return this.tweetsService.deleteTweet(id);
   }
 }

@@ -1,46 +1,44 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { Tweet } from './tweet.entity';
 import { CreateTweetDto, UpdateTweetDto } from './dto';
 
 @Injectable()
 export class TweetsService {
-  private tweets: Tweet[] = [
-    {
-      id: '1',
-      message: 'Hello world from NestJS',
-    },
-  ];
+  constructor(
+    @InjectRepository(Tweet)
+    private readonly tweetRepository: Repository<Tweet>,
+  ) {}
 
-  getTweets(): Tweet[] {
-    return this.tweets;
+  async getTweets(): Promise<Tweet[]> {
+    return await this.tweetRepository.find();
   }
 
-  getTweet(id: string): Tweet {
-    const tweet = this.tweets.find((item) => item.id === id);
+  async getTweet(id: number): Promise<Tweet> {
+    const tweet: Tweet = await this.tweetRepository.findOneBy({ id });
     if (!tweet) {
       throw new NotFoundException(`Tweet not found`);
     }
     return tweet;
   }
 
-  createTweet({ message }: CreateTweetDto): void {
-    this.tweets.push({
-      id: (Math.floor(Math.random() * 2000) + 1).toString(),
-      message,
-    });
+  createTweet(body: CreateTweetDto): void {
+    const tweet: Tweet = this.tweetRepository.create(body);
+    this.tweetRepository.save(tweet);
   }
 
-  updateTweet(id: string, message: UpdateTweetDto) {
-    let tweet: Tweet = this.getTweet(id);
-    tweet = { ...tweet, message: message.toString() };
+  async updateTweet(id: number, { message }: UpdateTweetDto): Promise<Tweet> {
+    const tweet: Tweet = await this.tweetRepository.preload({ id, message });
+    if (!tweet) {
+      throw new NotFoundException('Tweet not found');
+    }
     return tweet;
   }
 
-  deleteTweet(id: string): void {
-    const index = this.tweets.findIndex((tweet) => tweet.id === id);
-    if (index >= 0) {
-      this.tweets.splice(index, 1);
-    }
+  async deleteTweet(id: number): Promise<void> {
+    const tweet = await this.getTweet(id);
+    await this.tweetRepository.remove(tweet);
   }
 }
