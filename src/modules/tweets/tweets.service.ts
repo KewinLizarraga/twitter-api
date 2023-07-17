@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Tweet } from './tweet.entity';
-import { CreateTweetDto, UpdateTweetDto } from './dto';
+import { CreateTweetDto, PaginationQueryDto, UpdateTweetDto } from './dto';
 
 @Injectable()
 export class TweetsService {
@@ -12,8 +12,12 @@ export class TweetsService {
     private readonly tweetRepository: Repository<Tweet>,
   ) {}
 
-  async getTweets(): Promise<Tweet[]> {
-    return await this.tweetRepository.find({ relations: ['user'] });
+  async getTweets({ limit, offset }: PaginationQueryDto): Promise<Tweet[]> {
+    return await this.tweetRepository.find({
+      relations: ['user'],
+      skip: offset,
+      take: limit,
+    });
   }
 
   async getTweet(id: number): Promise<Tweet> {

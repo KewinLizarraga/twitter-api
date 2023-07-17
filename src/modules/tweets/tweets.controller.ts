@@ -11,16 +11,15 @@ import {
 
 import { TweetsService } from './tweets.service';
 import { Tweet } from './tweet.entity';
-import { CreateTweetDto, UpdateTweetDto } from './dto';
+import { CreateTweetDto, PaginationQueryDto, UpdateTweetDto } from './dto';
 
 @Controller('tweets')
 export class TweetsController {
   constructor(private readonly tweetsService: TweetsService) {}
 
   @Get()
-  async getTweets(@Query() filter): Promise<Tweet[]> {
-    const { orderBy, searchTerm } = filter;
-    return await this.tweetsService.getTweets();
+  async getTweets(@Query() pagination: PaginationQueryDto): Promise<Tweet[]> {
+    return await this.tweetsService.getTweets(pagination);
   }
 
   @Get(':id')
