@@ -4,12 +4,15 @@ import { Repository } from 'typeorm';
 
 import { Tweet } from './tweet.entity';
 import { CreateTweetDto, PaginationQueryDto, UpdateTweetDto } from './dto';
+import { User } from '../users/entities';
 
 @Injectable()
 export class TweetsService {
   constructor(
     @InjectRepository(Tweet)
     private readonly tweetRepository: Repository<Tweet>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async getTweets({ limit, offset }: PaginationQueryDto): Promise<Tweet[]> {
@@ -32,8 +35,8 @@ export class TweetsService {
     return tweet;
   }
 
-  createTweet(body: CreateTweetDto): void {
-    const tweet: Tweet = this.tweetRepository.create(body);
+  createTweet({ message, user }: CreateTweetDto): void {
+    const tweet: Tweet = this.tweetRepository.create({message, user});
     this.tweetRepository.save(tweet);
   }
 
