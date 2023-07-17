@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { TweetsModule } from './modules/tweets/tweets.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
-    TweetsModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -16,6 +16,8 @@ import { TweetsModule } from './modules/tweets/tweets.module';
       autoLoadEntities: true,
       synchronize: true, // solo en Dev
     }),
+    TweetsModule,
+    UsersModule,
   ],
 })
 export class AppModule {}
