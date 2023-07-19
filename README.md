@@ -3,3 +3,21 @@
 </p>
 
 # Twitter API
+
+1. Instalar dependencias
+
+```sh
+yarn install
+```
+
+2. Iniciar la Base de Datos con Docker
+
+```sh
+docker compose up -d
+```
+
+3. Iniciar la App
+
+```sh
+yarn start:dev
+```
